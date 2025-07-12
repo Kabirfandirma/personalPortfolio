@@ -3,7 +3,7 @@ import { Container, Nav, Navbar } from 'react-bootstrap';
 
 const CustomNavbar = () => {
     return (
-        <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
+        <Navbar bg="#6a11cb;" variant="dark" expand="lg" sticky="top">
             <Container>
                 <Navbar.Brand as={Link} to="/">Kabir Fandirma</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />

@@ -1,71 +1,122 @@
-import { Container, Card } from 'react-bootstrap';
+import { Container, Card, Row, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Link } from 'react-router-dom';
 
 const Gallery = () => {
-    const settings = {
+    const designs = [
+        { id: 1, title: "Masa Spot Flyer", img: "/assets/images/masa.png" },
+        { id: 2, title: "Poster Design", img: "/assets/images/poster.jpg" },
+        { id: 3, title: "Brand Identity", img: "/assets/images/sabil.png" },
+        { id: 3, title: "Brand Identity", img: "/assets/images/book.png" },
+        { id: 3, title: "Brand Identity", img: "/assets/images/amina.jpg" },
+        // Add more designs as needed
+    ];
+
+    // Slideshow settings
+    const sliderSettings = {
         dots: true,
         infinite: true,
         speed: 500,
         slidesToShow: 3,
         slidesToScroll: 1,
-        autoplay: true,          // Enable auto-play
-        autoplaySpeed: 3000,     // 3 seconds between transitions
-        pauseOnHover: true,      // Pause on mouse hover
-        arrows: true,            // Show navigation arrows
-        nextArrow: <button className="slick-next">Next</button>,
-        prevArrow: <button className="slick-prev">Prev</button>,
+        autoplay: true,
+        autoplaySpeed: 3000,
+        pauseOnHover: true,
         responsive: [
             {
                 breakpoint: 992,
-                settings: { slidesToShow: 2 }
+                settings: {
+                    slidesToShow: 2
+                }
             },
             {
                 breakpoint: 768,
-                settings: { slidesToShow: 1 }
+                settings: {
+                    slidesToShow: 1
+                }
             }
         ]
     };
 
-    const designs = [
-        { id: 1, title: "Masa Spot Flyer", img: "/assets/images/masa.png" },
-        { id: 2, title: "Poster Design", img: "/assets/images/poster.jpg" },
-        { id: 3, title: "Brand Identity", img: "/assets/images/sabil.png" },
-    ];
-
     return (
         <Container className="my-5">
             <h2 className="text-center mb-5">My Design Gallery</h2>
-            <Slider {...settings}>
+
+            {/* Slideshow Section */}
+            <div className="mb-5">
+                <Slider {...sliderSettings}>
+                    {designs.map((item) => (
+                        <div key={`slider-${item.id}`} className="px-2">
+                            <Card className="border-0 shadow-sm h-100">
+                                <div style={{
+                                    position: 'relative',
+                                    paddingBottom: '100%',
+                                    overflow: 'hidden'
+                                }}>
+                                    <Card.Img
+                                        variant="top"
+                                        src={process.env.PUBLIC_URL + item.img}
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            width: '100%',
+                                            height: '100%',
+                                            objectFit: 'cover'
+                                        }}
+                                    />
+                                </div>
+                                <Card.Body>
+                                    <Card.Title>{item.title}</Card.Title>
+                                </Card.Body>
+                            </Card>
+                        </div>
+                    ))}
+                </Slider>
+            </div>
+
+            {/* Grid Layout Section */}
+            <Row xs={1} sm={2} md={3} lg={4} className="g-4">
                 {designs.map((item) => (
-                    <div key={item.id} className="px-2">
-                        <Card className="border-0 shadow-sm" style={{ aspectRatio: '1/1' }}>
-                            <div className="square-image-container">
+                    <Col key={item.id}>
+                        <Card className="h-100 border-0 shadow-sm">
+                            <div style={{
+                                position: 'relative',
+                                paddingBottom: '100%',
+                                overflow: 'hidden'
+                            }}>
                                 <Card.Img
                                     variant="top"
-                                    src={item.img}
-                                    className="square-image"
+                                    src={process.env.PUBLIC_URL + item.img}
+                                    style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover'
+                                    }}
                                     onError={(e) => {
                                         e.target.onerror = null;
-                                        e.target.src = "/assets/images/placeholder.jpg";
+                                        e.target.src = process.env.PUBLIC_URL + "/assets/images/placeholder.jpg";
                                     }}
                                 />
                             </div>
                             <Card.Body className="d-flex flex-column">
-                                <Card.Title className="mt-auto">{item.title}</Card.Title>
+                                <Card.Title>{item.title}</Card.Title>
                                 <Link
                                     to={`/design/${item.id}`}
-                                    className="btn btn-outline-primary btn-sm mt-2"
+                                    className="btn btn-outline-primary btn-sm mt-auto"
                                 >
                                     View Details
                                 </Link>
                             </Card.Body>
                         </Card>
-                    </div>
+                    </Col>
                 ))}
-            </Slider>
+            </Row>
         </Container>
     );
 };

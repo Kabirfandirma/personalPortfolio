@@ -11,7 +11,7 @@ const Footer = () => {
                         <p>Graphic Designer & Visual Storyteller</p>
                     </Col>
                     <Col md={6} className="text-end">
-                        <a href="https://instagram.comkafandigitals" className="text-white mx-2"><FaInstagram size={25} /></a>
+                        <a href="https://instagram.com/kafandigitals" className="text-white mx-2"><FaInstagram size={25} /></a>
                         <a href="https://behance.net" className="text-white mx-2"><FaBehance size={25} /></a>
                         <a href="https://linkedin.com" className="text-white mx-2"><FaLinkedin size={25} /></a>
                     </Col>

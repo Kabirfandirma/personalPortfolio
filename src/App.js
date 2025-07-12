@@ -5,7 +5,6 @@ import Testimonials from './pages/Testimonials';
 import Contact from './pages/Contact';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import { FaFigma, FaAdobe } from 'react-icons/fa';
 
 function App() {
   return (

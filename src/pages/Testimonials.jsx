@@ -16,6 +16,7 @@ const Testimonials = () => {
                         <div className="text-warning mb-2">
                             {[...Array(review.rating)].map((_, i) => (
                                 <FaStar key={i} />
+
                             ))}
                         </div>
                         <Card.Text className="fst-italic">"{review.text}"</Card.Text>
