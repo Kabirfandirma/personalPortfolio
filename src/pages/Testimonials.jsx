@@ -1,21 +1,21 @@
-import { Container, Card } from 'react-bootstrap';
+import { useState } from 'react';
+import { Container, Card, Form, Button, Alert } from 'react-bootstrap';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { FaQuoteLeft, FaStar, FaRegStar } from 'react-icons/fa';
+import { FaQuoteLeft, FaStar, FaRegStar, FaCheck } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 
 const Testimonials = () => {
-    // Testimonial data with client photos
-    const testimonials = [
+    const [testimonials, setTestimonials] = useState([
         {
             id: 1,
             name: "Mr. Elkanah",
             role: "Marketing Director",
             text: "Kabir's designs transformed our brand identity. His attention to detail and creative vision exceeded our expectations.",
             rating: 5,
-            photo: "/assets/images/clients/elkanah.jpg" // Add client photos
+            photo: "/assets/images/clients/elkanah.jpg"
         },
         {
             id: 2,
@@ -33,7 +33,19 @@ const Testimonials = () => {
             rating: 5,
             photo: "/assets/images/clients/mukhtar.jpg"
         }
-    ];
+    ]);
+
+    const [formData, setFormData] = useState({
+        name: '',
+        role: '',
+        text: '',
+        rating: 5,
+        photo: ''
+    });
+
+    const [showForm, setShowForm] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+    const [errors, setErrors] = useState({});
 
     // Animation hook
     const [ref, inView] = useInView({
@@ -69,12 +81,63 @@ const Testimonials = () => {
         ]
     };
 
-    // Star rating component with half-star capability
-    const renderStars = (rating) => {
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleRatingChange = (rating) => {
+        setFormData(prev => ({
+            ...prev,
+            rating
+        }));
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+        if (!formData.name.trim()) newErrors.name = 'Name is required';
+        if (!formData.text.trim()) newErrors.text = 'Testimonial is required';
+        if (formData.text.length > 300) newErrors.text = 'Testimonial must be less than 300 characters';
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (validateForm()) {
+            const newTestimonial = {
+                id: testimonials.length + 1,
+                ...formData,
+                photo: formData.photo || '/assets/images/default-avatar.jpg'
+            };
+
+            setTestimonials([...testimonials, newTestimonial]);
+            setFormData({
+                name: '',
+                role: '',
+                text: '',
+                rating: 5,
+                photo: ''
+            });
+            setSubmitted(true);
+            setTimeout(() => setSubmitted(false), 3000);
+            setShowForm(false);
+        }
+    };
+
+    const renderStars = (rating, interactive = false) => {
         return [...Array(5)].map((_, i) => {
             const starValue = i + 1;
             return (
-                <span key={i} className="position-relative">
+                <span
+                    key={i}
+                    className="position-relative"
+                    onClick={() => interactive && handleRatingChange(starValue)}
+                    style={interactive ? { cursor: 'pointer' } : {}}
+                >
                     {rating >= starValue ? (
                         <FaStar className="text-warning" />
                     ) : (
@@ -97,7 +160,115 @@ const Testimonials = () => {
                 <div className="text-center mb-5">
                     <h2 className="display-5 fw-bold mb-3">Client Testimonials</h2>
                     <p className="lead text-muted">What my clients say about my work</p>
+
+                    <Button
+                        variant="primary"
+                        onClick={() => setShowForm(!showForm)}
+                        className="mt-3"
+                    >
+                        {showForm ? 'Hide Form' : 'Add Your Testimonial'}
+                    </Button>
                 </div>
+
+                {showForm && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="mb-5"
+                    >
+                        <Card className="border-0 shadow">
+                            <Card.Body>
+                                <h4 className="mb-4">Share Your Experience</h4>
+                                {submitted && (
+                                    <Alert variant="success" className="d-flex align-items-center">
+                                        <FaCheck className="me-2" />
+                                        Thank you for your testimonial!
+                                    </Alert>
+                                )}
+                                <Form onSubmit={handleSubmit}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Your Name *</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            name="name"
+                                            value={formData.name}
+                                            onChange={handleInputChange}
+                                            isInvalid={!!errors.name}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.name}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Your Role/Position</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            name="role"
+                                            value={formData.role}
+                                            onChange={handleInputChange}
+                                        />
+                                    </Form.Group>
+
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Your Testimonial *</Form.Label>
+                                        <Form.Control
+                                            as="textarea"
+                                            rows={4}
+                                            name="text"
+                                            value={formData.text}
+                                            onChange={handleInputChange}
+                                            isInvalid={!!errors.text}
+                                        />
+                                        <Form.Text className="text-muted">
+                                            {formData.text.length}/300 characters
+                                        </Form.Text>
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.text}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Your Rating</Form.Label>
+                                        <div className="d-flex align-items-center">
+                                            <div className="me-3" style={{ fontSize: '1.5rem' }}>
+                                                {renderStars(formData.rating, true)}
+                                            </div>
+                                            <span className="text-muted">
+                                                {formData.rating}.0
+                                            </span>
+                                        </div>
+                                    </Form.Group>
+
+                                    <Form.Group className="mb-4">
+                                        <Form.Label>Photo URL (optional)</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            name="photo"
+                                            value={formData.photo}
+                                            onChange={handleInputChange}
+                                            placeholder="Paste image URL"
+                                        />
+                                    </Form.Group>
+
+                                    <div className="d-flex justify-content-end">
+                                        <Button
+                                            variant="outline-secondary"
+                                            onClick={() => setShowForm(false)}
+                                            className="me-2"
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button variant="primary" type="submit">
+                                            Submit Testimonial
+                                        </Button>
+                                    </div>
+                                </Form>
+                            </Card.Body>
+                        </Card>
+                    </motion.div>
+                )}
 
                 <Slider {...settings}>
                     {testimonials.map((testimonial) => (
@@ -108,10 +279,8 @@ const Testimonials = () => {
                         >
                             <Card className="border-0 shadow-sm h-100 overflow-hidden">
                                 <Card.Body className="p-4 position-relative">
-                                    {/* Decorative element */}
                                     <div className="position-absolute top-0 start-0 w-100 bg-primary" style={{ height: '4px' }}></div>
 
-                                    {/* Quote icon with animation */}
                                     <motion.div
                                         initial={{ scale: 0.8 }}
                                         animate={{ scale: 1 }}
@@ -122,7 +291,6 @@ const Testimonials = () => {
                                         <FaQuoteLeft />
                                     </motion.div>
 
-                                    {/* Client photo */}
                                     <div className="d-flex align-items-center mb-4 position-relative z-1">
                                         <div className="rounded-circle overflow-hidden me-3" style={{ width: '60px', height: '60px' }}>
                                             <img
@@ -140,12 +308,10 @@ const Testimonials = () => {
                                         </div>
                                     </div>
 
-                                    {/* Testimonial text */}
                                     <Card.Text className="mb-4 fst-italic position-relative z-1">
                                         "{testimonial.text}"
                                     </Card.Text>
 
-                                    {/* Rating */}
                                     <div className="d-flex justify-content-between align-items-center position-relative z-1">
                                         <div className="d-flex" style={{ fontSize: '1.2rem' }}>
                                             {renderStars(testimonial.rating)}
