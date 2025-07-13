@@ -1,21 +1,39 @@
-import { Container, Card, Row, Col } from 'react-bootstrap';
+import { useMemo, useState } from 'react';
+import { Container, Card, Row, Col, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 const Gallery = () => {
-    const designs = [
-        { id: 1, title: "Masa Spot Flyer", img: "/assets/images/masa.png" },
-        { id: 2, title: "Poster Design", img: "/assets/images/poster.jpg" },
-        { id: 3, title: "Brand Identity", img: "/assets/images/sabil.png" },
-        { id: 3, title: "Brand Identity", img: "/assets/images/book.png" },
-        { id: 3, title: "Brand Identity", img: "/assets/images/amina.jpg" },
-        // Add more designs as needed
-    ];
+    const [loadingStates, setLoadingStates] = useState({});
+    const [activeFilter, setActiveFilter] = useState('All');
 
-    // Slideshow settings
-    const sliderSettings = {
+    const designs = useMemo(() => [
+        { id: 1, title: "Masa Spot Flyer", img: "/assets/images/masa.png", category: "Flyer" },
+        { id: 2, title: "Poster Design", img: "/assets/images/poster.jpg", category: "Poster" },
+        { id: 3, title: "Brand Identity", img: "/assets/images/sabil.png", category: "Branding" },
+        { id: 4, title: "Book Cover", img: "/assets/images/book.png", category: "Print" },
+        { id: 5, title: "Amina Collection", img: "/assets/images/amina.jpg", category: "Branding" },
+    ], []);
+
+    const filteredDesigns = useMemo(() => {
+        return activeFilter === 'All'
+            ? designs
+            : designs.filter(item => item.category === activeFilter);
+    }, [designs, activeFilter]);
+
+    const handleImageLoad = (id) => {
+        setLoadingStates(prev => ({ ...prev, [id]: false }));
+    };
+
+    const handleImageError = (e, id) => {
+        e.target.onerror = null;
+        e.target.src = process.env.PUBLIC_URL + "/assets/images/placeholder.jpg";
+        setLoadingStates(prev => ({ ...prev, [id]: false }));
+    };
+
+    const sliderSettings = useMemo(() => ({
         dots: true,
         infinite: true,
         speed: 500,
@@ -28,95 +46,140 @@ const Gallery = () => {
             {
                 breakpoint: 992,
                 settings: {
-                    slidesToShow: 2
+                    slidesToShow: 2,
+                    arrows: false
                 }
             },
             {
                 breakpoint: 768,
                 settings: {
-                    slidesToShow: 1
+                    slidesToShow: 1,
+                    arrows: false
                 }
             }
         ]
-    };
+    }), []);
+
+    const renderImageCard = (item, isSlider = false) => (
+        <Card className={`border-0 shadow-sm h-100 ${isSlider ? 'mx-2' : ''}`}>
+            <div style={{
+                position: 'relative',
+                paddingBottom: '100%',
+                overflow: 'hidden',
+                backgroundColor: '#f8f9fa'
+            }}>
+                {loadingStates[item.id] !== false && (
+                    <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: '#f8f9fa'
+                    }}>
+                        <Spinner animation="border" variant="primary" />
+                    </div>
+                )}
+                <img
+                    src={process.env.PUBLIC_URL + item.img}
+                    alt={item.title}
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.3s ease',
+                        display: loadingStates[item.id] === false ? 'block' : 'none'
+                    }}
+                    onLoad={() => handleImageLoad(item.id)}
+                    onError={(e) => handleImageError(e, item.id)}
+                />
+            </div>
+            <Card.Body className="d-flex flex-column">
+                <div className="d-flex justify-content-between align-items-start">
+                    <Card.Title className="mb-2">{item.title}</Card.Title>
+                    <span className="badge bg-primary">{item.category}</span>
+                </div>
+                <Link
+                    to={`/design/${item.id}`}
+                    className="btn btn-outline-primary btn-sm mt-auto align-self-start"
+                >
+                    View Details
+                </Link>
+            </Card.Body>
+        </Card>
+    );
 
     return (
-        <Container className="my-5">
-            <h2 className="text-center mb-5">My Design Gallery</h2>
+        <Container className="my-5 gallery-container">
+            <h2 className="text-center mb-5 display-5 fw-bold">My Design Portfolio</h2>
 
-            {/* Slideshow Section */}
-            <div className="mb-5">
+            {/* Featured Slideshow Section */}
+            <section className="mb-5">
+                <h3 className="mb-4 text-center">Featured Works</h3>
                 <Slider {...sliderSettings}>
                     {designs.map((item) => (
-                        <div key={`slider-${item.id}`} className="px-2">
-                            <Card className="border-0 shadow-sm h-100">
-                                <div style={{
-                                    position: 'relative',
-                                    paddingBottom: '100%',
-                                    overflow: 'hidden'
-                                }}>
-                                    <Card.Img
-                                        variant="top"
-                                        src={process.env.PUBLIC_URL + item.img}
-                                        style={{
-                                            position: 'absolute',
-                                            top: 0,
-                                            left: 0,
-                                            width: '100%',
-                                            height: '100%',
-                                            objectFit: 'cover'
-                                        }}
-                                    />
-                                </div>
-                                <Card.Body>
-                                    <Card.Title>{item.title}</Card.Title>
-                                </Card.Body>
-                            </Card>
+                        <div key={`slider-${item.id}`}>
+                            {renderImageCard(item, true)}
                         </div>
                     ))}
                 </Slider>
-            </div>
+            </section>
 
-            {/* Grid Layout Section */}
-            <Row xs={1} sm={2} md={3} lg={4} className="g-4">
-                {designs.map((item) => (
-                    <Col key={item.id}>
-                        <Card className="h-100 border-0 shadow-sm">
-                            <div style={{
-                                position: 'relative',
-                                paddingBottom: '100%',
-                                overflow: 'hidden'
-                            }}>
-                                <Card.Img
-                                    variant="top"
-                                    src={process.env.PUBLIC_URL + item.img}
-                                    style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        width: '100%',
-                                        height: '100%',
-                                        objectFit: 'cover'
-                                    }}
-                                    onError={(e) => {
-                                        e.target.onerror = null;
-                                        e.target.src = process.env.PUBLIC_URL + "/assets/images/placeholder.jpg";
-                                    }}
-                                />
-                            </div>
-                            <Card.Body className="d-flex flex-column">
-                                <Card.Title>{item.title}</Card.Title>
-                                <Link
-                                    to={`/design/${item.id}`}
-                                    className="btn btn-outline-primary btn-sm mt-auto"
-                                >
-                                    View Details
-                                </Link>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                ))}
-            </Row>
+            {/* Full Gallery Grid Section */}
+            <section>
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                    <h3>All Projects</h3>
+                    <div className="btn-group">
+                        {['All', 'Branding', 'Print', 'Flyer', 'Poster'].map(filter => (
+                            <button
+                                key={filter}
+                                className={`btn btn-outline-secondary btn-sm ${activeFilter === filter ? 'active' : ''}`}
+                                onClick={() => setActiveFilter(filter)}
+                            >
+                                {filter}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+                    {filteredDesigns.map((item) => (
+                        <Col key={item.id}>
+                            {renderImageCard(item)}
+                        </Col>
+                    ))}
+                </Row>
+            </section>
+
+            {/* CSS for additional styling */}
+            <style>{`
+                .gallery-container {
+                    max-width: 1200px;
+                }
+                .card {
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                }
+                .card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+                }
+                .slick-slide > div {
+                    padding: 0 10px;
+                }
+                .slick-list {
+                    margin: 0 -10px;
+                }
+                .badge {
+                    font-size: 0.7rem;
+                    font-weight: 500;
+                }
+            `}</style>
         </Container>
     );
 };
