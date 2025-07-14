@@ -2,6 +2,12 @@ import { useState, useRef } from 'react';
 import { Container, Form, Button, Alert } from 'react-bootstrap';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaPaperPlane, FaCheckCircle, FaSpinner } from 'react-icons/fa';
+import emailjs from '@emailjs/browser';
+
+// ✅ Replace these with your actual EmailJS credentials
+const SERVICE_ID = 'service_hakfzwk';       // e.g. 'service_xxx123'
+const TEMPLATE_ID = 'template_qsh926g';     // e.g. 'template_abcd12'
+const PUBLIC_KEY = 'wUVm81MUQAJNox6vu';       // e.g. 'KZAbc123456XYZ'
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -36,17 +42,22 @@ const Contact = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
         if (validateForm()) {
             setIsSubmitting(true);
 
-            // Simulate form submission (replace with your backend logic)
-            setTimeout(() => {
-                console.log('Form data:', formData); // Replace with actual submission
-                setShowSuccess(true);
-                setFormData({ name: '', email: '', message: '' });
-                setIsSubmitting(false);
-                setTimeout(() => setShowSuccess(false), 5000);
-            }, 1500);
+            emailjs.send(SERVICE_ID, TEMPLATE_ID, formData, PUBLIC_KEY)
+                .then(() => {
+                    setShowSuccess(true);
+                    setFormData({ name: '', email: '', message: '' });
+                    setIsSubmitting(false);
+                    setTimeout(() => setShowSuccess(false), 5000);
+                })
+                .catch((error) => {
+                    console.error('EmailJS Error:', error);
+                    alert('Something went wrong. Please try again later.');
+                    setIsSubmitting(false);
+                });
         }
     };
 

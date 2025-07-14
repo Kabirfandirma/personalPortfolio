@@ -42,7 +42,8 @@ const Footer = () => {
                             viewport={{ once: true }}
                         >
                             <h3 className="h4 mb-3 fw-bold">Kabir Almustapha Fandirma</h3>
-                            <p className="text-muted mb-4">Transforming ideas into visually stunning realities through graphic design and visual storytelling.</p>
+                            <p className="mb-4" style={{ color: '#ffffff' }}>
+                                Transforming ideas into visually stunning realities through graphic design and visual storytelling.</p>
 
                             <div className="d-flex flex-column gap-2">
                                 <motion.a

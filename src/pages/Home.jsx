@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { motion } from 'framer-motion';
@@ -7,130 +6,72 @@ import { SiAdobephotoshop, SiAdobeillustrator } from 'react-icons/si';
 import AnimatedText from '../components/AnimatedText';
 import ceoImage from '../assets/images/ceo.png';
 
+const tools = [
+    { Icon: FaFigma, name: 'Figma' },
+    { Icon: SiAdobephotoshop, name: 'Photoshop' },
+    { Icon: SiAdobeillustrator, name: 'Illustrator' },
+];
+
+// Animation variants
+const imageVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        transition: { type: 'spring', stiffness: 200, delay: 0.6 },
+    },
+};
+
 const Home = () => {
-    // Memoized styles and data
-    const backgroundStyle = useMemo(() => ({
-        backgroundImage: `url(${process.env.PUBLIC_URL}/images/bg.jpg)`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed',
-        minHeight: '190vh',
-        position: 'relative'
-    }), []);
-
-    const containerStyle = useMemo(() => ({
-        backgroundColor: 'rgba(253, 253, 253, 0.53)',
-        borderRadius: '10px',
-        padding: '2rem',
-        boxShadow: '0 0 20px rgba(0,0,0,0.1)'
-    }), []);
-
-    const buttonStyle = useMemo(() => ({
-        backgroundColor: '#262639ff',
-        color: 'white',
-        transition: 'all 0.3s ease',
-    }), []);
-
-    const tools = useMemo(() => [
-        { Icon: FaFigma, name: 'Figma' },
-        { Icon: SiAdobephotoshop, name: 'Photoshop' },
-        { Icon: SiAdobeillustrator, name: 'Illustrator' }
-    ], []);
-
-    // Animation variants
-    const imageVariants = {
-        hidden: { opacity: 0, scale: 0.8 },
-        visible: {
-            opacity: 1,
-            scale: 1,
-            transition: {
-                type: "spring",
-                stiffness: 300,
-                delay: 1.0
-            }
-        }
-    };
-
-    const toolsContainerVariants = {
-        hidden: { opacity: 0, y: 10 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                delay: 1.4,
-                staggerChildren: 0.1
-            }
-        }
-    };
-
-    const toolItemVariants = {
-        hidden: { scale: 0 },
-        visible: (i) => ({
-            scale: 1,
-            transition: {
-                type: "spring",
-                delay: 1.5 + i * 0.1
-            }
-        })
-    };
-
     return (
-        <div style={backgroundStyle}>
-            <Container className="my-5" style={containerStyle}>
-                <Row className="align-items-center g-4">
-                    <Col md={8}>
+        <div className="home-section">
+            <div className="overlay" />
+            <Container className="content-wrapper py-5 px-4">
+                <Row className="align-items-center g-5">
+                    <Col md={6}>
                         <div>
                             <AnimatedText
                                 text="Kabir Almustapha Fandirma"
                                 element="h1"
-                                className="display-4 fw-bold mb-3"
-                                delay={0.2}
-                                bounceScale={1.3}
+                                className="hero-title mb-3"
+                                delay={0.1}
                             />
-
                             <AnimatedText
                                 text="Creative Graphic Designer"
                                 element="p"
-                                className="lead text-muted mb-3"
-                                delay={0.4}
-                                bounceScale={1.1}
+                                className="hero-subtitle mb-3"
+                                delay={0.3}
                             />
-
                             <AnimatedText
                                 text="I specialize in branding, illustrations, and digital art."
                                 element="p"
-                                className="mb-4"
-                                delay={0.6}
+                                className="hero-description mb-4"
+                                delay={0.5}
                             />
 
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.8, type: "spring" }}
+                                transition={{ delay: 0.7 }}
                             >
-                                <Button
-                                    as={Link}
-                                    to="/gallery"
-                                    variant="info"
-                                    size="lg"
-                                    style={buttonStyle}
-                                    className="hover-effect"
-                                >
-                                    View My Work
-                                </Button>
+                                <Link to="/gallery">
+                                    <Button className="cta-button" size="lg">
+                                        View My Work
+                                    </Button>
+                                </Link>
                             </motion.div>
                         </div>
                     </Col>
 
-                    <Col md={4}>
+                    <Col md={6}>
                         <motion.div
                             variants={imageVariants}
                             initial="hidden"
                             animate="visible"
+                            className="text-center"
                         >
-                            <Card className="border-0 shadow overflow-hidden">
+                            <Card className="profile-card shadow border-0">
                                 <Card.Img
-                                    variant="top"
                                     src={ceoImage}
                                     alt="Kabir Almustapha Fandirma"
                                     className="img-fluid"
@@ -145,49 +86,100 @@ const Home = () => {
                         <AnimatedText
                             text="Tools I Use"
                             element="h3"
-                            className="mb-4"
-                            delay={1.2}
+                            className="tools-title mb-4 text-center"
+                            delay={1}
                         />
-                        <motion.div
-                            variants={toolsContainerVariants}
-                            initial="hidden"
-                            animate="visible"
-                            className="d-flex flex-wrap gap-4 mt-3"
-                        >
+                        <div className="d-flex justify-content-center flex-wrap gap-4">
                             {tools.map(({ Icon, name }, index) => (
                                 <motion.div
                                     key={name}
-                                    custom={index}
-                                    variants={toolItemVariants}
-                                    className="tool-item text-center"
+                                    className="tool-box text-center"
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: 1.1 + index * 0.2, type: 'spring' }}
                                     whileHover={{ scale: 1.1 }}
-                                    whileTap={{ scale: 0.95 }}
                                 >
                                     <Icon size={40} />
-                                    <p className="small mt-2 mb-0">{name}</p>
+                                    <p className="mt-2 mb-0 small fw-medium">{name}</p>
                                 </motion.div>
                             ))}
-                        </motion.div>
+                        </div>
                     </Col>
                 </Row>
             </Container>
 
-            {/* CSS for hover effects - moved to regular CSS or inline styles */}
+            {/* Embedded CSS */}
             <style>{`
-                .hover-effect:hover {
-                    background-color: #483D8B !important;
-                }
-                .tool-item {
-                    cursor: default;
-                    padding: 1rem;
-                    border-radius: 8px;
-                    background: rgba(255,255,255,0.2);
-                    transition: all 0.3s ease;
-                }
-                .tool-item:hover {
-                    background: rgba(255,255,255,0.3);
-                }
-            `}</style>
+        .home-section {
+          background-image: url(${process.env.PUBLIC_URL}/images/bg.jpg);
+          background-size: cover;
+          background-position: center;
+          background-attachment: fixed;
+          min-height: 100vh;
+          position: relative;
+          color: #1c1c1c;
+        }
+
+        .overlay {
+          position: absolute;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
+          background-color: rgba(255,255,255,0.65);
+          z-index: 1;
+        }
+
+        .content-wrapper {
+          position: relative;
+          z-index: 2;
+          background-color: white;
+          border-radius: 12px;
+          box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .hero-title {
+          font-size: 2.5rem;
+          font-weight: 700;
+        }
+
+        .hero-subtitle {
+          font-size: 1.4rem;
+          color: #6c757d;
+        }
+
+        .hero-description {
+          font-size: 1rem;
+          color: #333;
+        }
+
+        .cta-button {
+          background-color: #262639;
+          border: none;
+          padding: 10px 30px;
+          font-weight: 500;
+          transition: 0.3s;
+        }
+
+        .cta-button:hover {
+          background-color: #483D8B;
+        }
+
+        .profile-card img {
+          border-radius: 12px;
+        }
+
+        .tool-box {
+          background: rgba(0, 0, 0, 0.05);
+          padding: 1rem 1.5rem;
+          border-radius: 10px;
+          min-width: 120px;
+          transition: all 0.3s ease;
+        }
+
+        .tools-title {
+          font-weight: 600;
+          font-size: 1.5rem;
+        }
+      `}</style>
         </div>
     );
 };
