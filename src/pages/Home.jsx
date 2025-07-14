@@ -32,6 +32,7 @@ const Home = () => {
                         <div>
                             <AnimatedText
                                 text="Kabir Almustapha Fandirma"
+
                                 element="h1"
                                 className="hero-title mb-3"
                                 delay={0.1}
@@ -111,7 +112,7 @@ const Home = () => {
             {/* Embedded CSS */}
             <style>{`
         .home-section {
-          background-image: url(${process.env.PUBLIC_URL}/images/bg.jpg);
+          background-image: url(${process.env.PUBLIC_URL}/images/big2.gif);
           background-size: cover;
           background-position: center;
           background-attachment: fixed;
@@ -124,14 +125,14 @@ const Home = () => {
           position: absolute;
           top: 0; left: 0;
           width: 100%; height: 100%;
-          background-color: rgba(255,255,255,0.65);
+          background-color: rgba(255, 255, 255, 0.19);
           z-index: 1;
         }
 
         .content-wrapper {
           position: relative;
           z-index: 2;
-          background-color: white;
+           background-color: rgba(255, 255, 255, 0.8);
           border-radius: 12px;
           box-shadow: 0 8px 30px rgba(0,0,0,0.1);
         }

@@ -1,3 +1,8 @@
+import AdminTestimonials from './components/pages/Testimonials.jsx';
+
+<Route path="/admin/testimonials" element={<AdminTestimonials />} />
+
+
 const express = require('express');
 const cors = require('cors');
 const app = express();

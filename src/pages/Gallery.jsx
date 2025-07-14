@@ -116,71 +116,104 @@ const Gallery = () => {
     );
 
     return (
-        <Container className="my-5 gallery-container">
-            <h2 className="text-center mb-5 display-5 fw-bold">My Design Portfolio</h2>
+        <div className="gallery-section">
+            <div className="overlay" />
 
-            {/* Featured Slideshow Section */}
-            <section className="mb-5">
-                <h3 className="mb-4 text-center">Featured Works</h3>
-                <Slider {...sliderSettings}>
-                    {designs.map((item) => (
-                        <div key={`slider-${item.id}`}>
-                            {renderImageCard(item, true)}
-                        </div>
-                    ))}
-                </Slider>
-            </section>
+            <Container className="my-5 gallery-wrapper">
+                <h2 className="text-center mb-5 display-5 fw-bold">My Design Portfolio</h2>
 
-            {/* Full Gallery Grid Section */}
-            <section>
-                <div className="d-flex justify-content-between align-items-center mb-4">
-                    <h3>All Projects</h3>
-                    <div className="btn-group">
-                        {['All', 'Branding', 'Print', 'Flyer', 'Poster'].map(filter => (
-                            <button
-                                key={filter}
-                                className={`btn btn-outline-secondary btn-sm ${activeFilter === filter ? 'active' : ''}`}
-                                onClick={() => setActiveFilter(filter)}
-                            >
-                                {filter}
-                            </button>
+                {/* Featured Slideshow */}
+                <section className="mb-5">
+                    <h3 className="mb-4 text-center">Featured Works</h3>
+                    <Slider {...sliderSettings}>
+                        {designs.map((item) => (
+                            <div key={`slider-${item.id}`}>
+                                {renderImageCard(item, true)}
+                            </div>
                         ))}
+                    </Slider>
+                </section>
+
+                {/* Gallery Grid */}
+                <section>
+                    <div className="d-flex justify-content-between align-items-center mb-4">
+                        <h3>All Projects</h3>
+                        <div className="btn-group">
+                            {['All', 'Branding', 'Print', 'Flyer', 'Poster'].map(filter => (
+                                <button
+                                    key={filter}
+                                    className={`btn btn-outline-secondary btn-sm ${activeFilter === filter ? 'active' : ''}`}
+                                    onClick={() => setActiveFilter(filter)}
+                                >
+                                    {filter}
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                </div>
 
-                <Row xs={1} sm={2} md={3} lg={4} className="g-4">
-                    {filteredDesigns.map((item) => (
-                        <Col key={item.id}>
-                            {renderImageCard(item)}
-                        </Col>
-                    ))}
-                </Row>
-            </section>
+                    <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+                        {filteredDesigns.map((item) => (
+                            <Col key={item.id}>
+                                {renderImageCard(item)}
+                            </Col>
+                        ))}
+                    </Row>
+                </section>
+            </Container>
 
-            {/* CSS for additional styling */}
+            {/* Embedded CSS */}
             <style>{`
-                .gallery-container {
-                    max-width: 1200px;
+                .gallery-section {
+                    background-image: url(${process.env.PUBLIC_URL}/images/big2.gif);
+                    background-size: cover;
+                    background-position: center;
+                    background-attachment: fixed;
+                    min-height: 100vh;
+                    position: relative;
                 }
+
+                .overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(255, 255, 255, 0.2);
+                    z-index: 1;
+                }
+
+                .gallery-wrapper {
+                    position: relative;
+                    z-index: 2;
+                    background-color: rgba(255, 255, 255, 0.87);
+                    padding: 2rem;
+                    border-radius: 16px;
+                    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+                }
+
                 .card {
                     transition: transform 0.3s ease, box-shadow 0.3s ease;
                 }
+
                 .card:hover {
                     transform: translateY(-5px);
                     box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
                 }
+
                 .slick-slide > div {
                     padding: 0 10px;
                 }
+
                 .slick-list {
                     margin: 0 -10px;
                 }
+
                 .badge {
                     font-size: 0.7rem;
                     font-weight: 500;
                 }
             `}</style>
-        </Container>
+        </div>
     );
 };
 
