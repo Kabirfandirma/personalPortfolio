@@ -15,7 +15,7 @@ import {
   InteractiveButton,
   GlassCard,
 } from "../components/InteractiveElements";
-import { useIntersectionObserver } from "../hooks/useCustomHooks";
+// import { useIntersectionObserver } from "../hooks/useCustomHooks";
 import AnimatedText from "../components/AnimatedText";
 
 const Testimonials = () => {
@@ -60,7 +60,7 @@ const Testimonials = () => {
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
-  const [] = useIntersectionObserver({ threshold: 0.1 });
+  //   const [ref, inView] = useIntersectionObserver({ threshold: 0.1 });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
