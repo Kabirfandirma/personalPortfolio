@@ -60,7 +60,7 @@ const Testimonials = () => {
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
-  //   const [ref, inView] = useIntersectionObserver({ threshold: 0.1 });
+  const [] = useIntersectionObserver({ threshold: 0.1 });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
