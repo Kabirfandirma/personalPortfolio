@@ -298,7 +298,7 @@ const Contact = () => {
                           disabled={isSubmitting || isPending}
                           className="btn btn-primary btn-lg"
                           style={{
-                            background: "var(--bs-gradient)",
+                            background: "var(blue)",
                             border: "none",
                             borderRadius: "12px",
                             padding: "15px",
