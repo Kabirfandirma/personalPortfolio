@@ -110,7 +110,7 @@ const Contact = () => {
     {
       icon: FaPhone,
       title: "Phone",
-      value: "+234 7039350100",
+      value: "+2347039350100",
       color: "#2575fc",
     },
     {
